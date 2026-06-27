@@ -1,22 +1,16 @@
 # ══════════════════════════════════════════════════════════════════════════════
 #  🌈  P H I L O S O P H E R S   —   M A K E F I L E
-#  Replace the placeholder source files under SOURCES with your actual .c files
 # ══════════════════════════════════════════════════════════════════════════════
 
 NAME       := philo
 
 SRC_DIR    := src
-INC_DIR    := include
+INC_DIR    := includes
 OBJ_DIR    := build
-LIBFT_DIR  := ./ft_libft
-PRINTF_DIR := ./ft_printf
-
-LIBFT      := $(LIBFT_DIR)/libft.a
-LIBPRINTF  := $(PRINTF_DIR)/libftprintf.a
 
 CC         := cc
 CFLAGS     := -Wall -Wextra -Werror -pthread
-INCLUDES   := -I$(INC_DIR) -I$(LIBFT_DIR) -I$(PRINTF_DIR)
+INCLUDES   := -I$(INC_DIR)
 
 LDLIBS     := -lpthread
 
@@ -182,7 +176,7 @@ define HELP_SCREEN
 	@echo "$(BOLD)$(CYAN)  ║                                                                               ║$(RESET)"
 	@echo "$(BOLD)$(CYAN)  ║                   🌈  MAKEFILE COMMAND REFERENCE  🌈                         ║$(RESET)"
 	@echo "$(BOLD)$(CYAN)  ║                                                                               ║$(RESET)"
-	@echo "$(BOLD)$(CYAN)  ║   $(GREEN)make$(CYAN)  /  $(GREEN)make all$(CYAN)    →  Compile $(NAME) and all dependencies            ║$(RESET)"
+	@echo "$(BOLD)$(CYAN)  ║   $(GREEN)make$(CYAN)  /  $(GREEN)make all$(CYAN)    →  Compile $(NAME)                                   ║$(RESET)"
 	@echo "$(BOLD)$(CYAN)  ║   $(YELLOW)make clean$(CYAN)         →  Remove all object files                          ║$(RESET)"
 	@echo "$(BOLD)$(CYAN)  ║   $(ORANGE)make fclean$(CYAN)        →  Remove objects + executable                      ║$(RESET)"
 	@echo "$(BOLD)$(CYAN)  ║   $(MAGENTA)make re$(CYAN)            →  Full rebuild (fclean + all)                      ║$(RESET)"
@@ -196,12 +190,16 @@ endef
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-#  📁  S O U R C E S   — add your .c files here
+#  📁  S O U R C E S
 # ══════════════════════════════════════════════════════════════════════════════
 
 SOURCES := \
-	src/YOUR_FILE_HERE.c
-#	src/another_file.c   ← uncomment and fill as needed
+	src/main.c \
+	src/init.c \
+	src/monitor.c \
+	src/parsing.c \
+	src/routine.c \
+	src/time_stamp.c
 
 OBJECTS := $(SOURCES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
@@ -210,7 +208,7 @@ OBJECTS := $(SOURCES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 #  🎯  R U L E S
 # ══════════════════════════════════════════════════════════════════════════════
 
-all: header $(LIBFT) $(LIBPRINTF) $(NAME)
+all: header $(NAME)
 	@$(call PROGRESS_BAR)
 	@$(call SUCCESS_SCREEN)
 
@@ -223,8 +221,7 @@ $(NAME): $(OBJECTS)
 	@echo ""
 	@echo "$(BOLD)$(MAGENTA)  Linking $(NAME)...$(RESET)"
 	@$(call LOADING_ANIMATION)
-	@$(CC) $(CFLAGS) $(OBJECTS) -L$(LIBFT_DIR) -lft -L$(PRINTF_DIR) -lftprintf \
-		$(LDLIBS) -o $@
+	@$(CC) $(CFLAGS) $(OBJECTS) $(LDLIBS) -o $@
 	@echo "$(BOLD)$(GREEN)  ✓ $(NAME) linked$(RESET)"
 
 
@@ -235,26 +232,10 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo "$(BOLD)$(GREEN)✓$(RESET)"
 
 
-$(LIBFT):
-	@echo "$(BOLD)$(BI_PINK)  building libft...$(RESET)"
-	@$(call LOADING_ANIMATION)
-	@$(MAKE) --no-print-directory -C $(LIBFT_DIR)
-	@echo "$(BOLD)$(BI_BLUE)  ✓ libft ready$(RESET)"
-
-
-$(LIBPRINTF):
-	@echo "$(BOLD)$(BI_PURPLE)  building libftprintf...$(RESET)"
-	@$(call LOADING_ANIMATION)
-	@$(MAKE) --no-print-directory -C $(PRINTF_DIR)
-	@echo "$(BOLD)$(BI_BLUE)  ✓ libftprintf ready$(RESET)"
-
-
 clean:
 	@$(call CLEAN_SCREEN)
 	@$(call LOADING_ANIMATION)
 	@rm -rf $(OBJ_DIR)
-	@$(MAKE) --no-print-directory -C $(LIBFT_DIR) clean
-	@$(MAKE) --no-print-directory -C $(PRINTF_DIR) clean
 	@echo "$(BOLD)$(GREEN)  ✓ object files removed$(RESET)"
 
 
@@ -262,8 +243,6 @@ fclean: clean
 	@echo "$(BOLD)$(RED)  Executing deep cleanup — out with the old, in with the new 🌈$(RESET)"
 	@$(call LOADING_ANIMATION)
 	@rm -f $(NAME)
-	@$(MAKE) --no-print-directory -C $(LIBFT_DIR) fclean
-	@$(MAKE) --no-print-directory -C $(PRINTF_DIR) fclean
 	@echo "$(BOLD)$(GREEN)  ✓ executables removed$(RESET)"
 
 
