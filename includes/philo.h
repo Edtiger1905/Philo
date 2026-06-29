@@ -6,7 +6,7 @@
 /*   By: epandele <epandele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 11:27:41 by epandele          #+#    #+#             */
-/*   Updated: 2026/06/29 11:43:17 by epandele         ###   ########.fr       */
+/*   Updated: 2026/06/29 12:36:16 by epandele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,20 +65,19 @@ void					cleanup(t_data *d, pthread_t *threads,
 							pthread_t monitor);
 
 /* routine.c */
-void					safe_print(t_philo *p, const char *msg);
 void					*philo_routine(void *arg);
 
 /* monitor.c */
-int						is_dead(t_philo *p);
 int						check_dead_flag(t_data *d);
 void					*monitor_routine(void *arg);
 
 /* time_stamp.c */
 long long				get_time_ms(void);
-void					precise_sleep(long long ms);
+void					precise_sleep(long long ms, t_data *d);
 
 /* philo_utils.c */
-
 int						is_dead(t_philo *p);
+void					safe_print(t_philo *p, const char *msg);
+long long				think_time(t_data *d);
 
 #endif

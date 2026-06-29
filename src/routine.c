@@ -6,31 +6,14 @@
 /*   By: epandele <epandele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 11:26:31 by epandele          #+#    #+#             */
-/*   Updated: 2026/06/29 11:26:32 by epandele         ###   ########.fr       */
+/*   Updated: 2026/06/29 12:37:08 by epandele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	safe_print(t_philo *p, const char *msg)
-{
-	pthread_mutex_lock(&p->data->print_mutex);
-	if (!p->data->dead)
-		printf("%lld %d %s\n", get_time_ms() - p->data->start_time,
-			p->id, msg);
-	pthread_mutex_unlock(&p->data->print_mutex);
-}
-
 static void	take_forks(t_philo *p)
 {
-	if (p->data->num_philos == 1)
-	{
-		pthread_mutex_lock(&p->left_fork->mutex);
-		safe_print(p, "has taken a fork");
-		precise_sleep(p->data->time_to_die);
-		pthread_mutex_unlock(&p->left_fork->mutex);
-		return ;
-	}
 	if (p->id % 2 == 0)
 	{
 		pthread_mutex_lock(&p->right_fork->mutex);
@@ -46,12 +29,6 @@ static void	take_forks(t_philo *p)
 	safe_print(p, "has taken a fork");
 }
 
-static void	put_forks(t_philo *p)
-{
-	pthread_mutex_unlock(&p->left_fork->mutex);
-	pthread_mutex_unlock(&p->right_fork->mutex);
-}
-
 static void	eat(t_philo *p)
 {
 	safe_print(p, "is eating");
@@ -59,7 +36,28 @@ static void	eat(t_philo *p)
 	p->last_meal_time = get_time_ms();
 	p->meals_eaten++;
 	pthread_mutex_unlock(&p->meal_mutex);
-	precise_sleep(p->data->time_to_eat);
+	precise_sleep(p->data->time_to_eat, p->data);
+}
+
+static void	run_cycle(t_philo *p)
+{
+	while (!check_dead_flag(p->data))
+	{
+		safe_print(p, "is thinking");
+		take_forks(p);
+		if (check_dead_flag(p->data))
+		{
+			pthread_mutex_unlock(&p->left_fork->mutex);
+			pthread_mutex_unlock(&p->right_fork->mutex);
+			return ;
+		}
+		eat(p);
+		pthread_mutex_unlock(&p->left_fork->mutex);
+		pthread_mutex_unlock(&p->right_fork->mutex);
+		safe_print(p, "is sleeping");
+		precise_sleep(p->data->time_to_sleep, p->data);
+		precise_sleep(think_time(p->data), p->data);
+	}
 }
 
 void	*philo_routine(void *arg)
@@ -67,18 +65,15 @@ void	*philo_routine(void *arg)
 	t_philo	*p;
 
 	p = (t_philo *)arg;
-	if (p->id % 2 == 0)
-		usleep(1000);
-	while (!check_dead_flag(p->data))
+	if (p->data->num_philos == 1)
 	{
-		safe_print(p, "is thinking");
-		take_forks(p);
-		if (p->data->num_philos == 1)
-			return (NULL);
-		eat(p);
-		put_forks(p);
-		safe_print(p, "is sleeping");
-		precise_sleep(p->data->time_to_sleep);
+		pthread_mutex_lock(&p->left_fork->mutex);
+		safe_print(p, "has taken a fork");
+		pthread_mutex_unlock(&p->left_fork->mutex);
+		return (NULL);
 	}
+	if (p->id % 2 == 0)
+		precise_sleep(p->data->time_to_eat, p->data);
+	run_cycle(p);
 	return (NULL);
 }
