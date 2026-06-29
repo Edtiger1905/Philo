@@ -164,3 +164,5 @@ make
 #### Uso dell'IA
 
 L'IA è stata utilizzata come strumento di studio per comprendere meglio i concetti di threading e mutex, e per aiutare a identificare e correggere piccoli bug durante lo sviluppo.
+
+

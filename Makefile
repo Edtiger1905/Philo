@@ -199,7 +199,8 @@ SOURCES := \
 	src/monitor.c \
 	src/parsing.c \
 	src/routine.c \
-	src/time_stamp.c
+	src/time_stamp.c \
+	src/philo_utils.c
 
 OBJECTS := $(SOURCES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 

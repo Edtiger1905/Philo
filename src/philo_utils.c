@@ -1,30 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   time_stamp.c                                       :+:      :+:    :+:   */
+/*   philo_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: epandele <epandele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/29 11:26:43 by epandele          #+#    #+#             */
-/*   Updated: 2026/06/29 11:44:24 by epandele         ###   ########.fr       */
+/*   Created: 2026/06/29 11:44:10 by epandele          #+#    #+#             */
+/*   Updated: 2026/06/29 11:44:14 by epandele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long long	get_time_ms(void)
+int	is_dead(t_philo *p)
 {
-	struct timeval	tv;
+	int			dead;
+	long long	since_meal;
 
-	gettimeofday(&tv, NULL);
-	return (((long long)tv.tv_sec * 1000) + (tv.tv_usec / 1000));
-}
-
-void	precise_sleep(long long ms)
-{
-	long long	start;
-
-	start = get_time_ms();
-	while (get_time_ms() - start < ms)
-		usleep(500);
+	pthread_mutex_lock(&p->meal_mutex);
+	since_meal = get_time_ms() - p->last_meal_time;
+	dead = (since_meal >= p->data->time_to_die);
+	pthread_mutex_unlock(&p->meal_mutex);
+	return (dead);
 }

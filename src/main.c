@@ -6,7 +6,7 @@
 /*   By: epandele <epandele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 11:26:20 by epandele          #+#    #+#             */
-/*   Updated: 2026/06/29 11:26:21 by epandele         ###   ########.fr       */
+/*   Updated: 2026/06/29 11:41:19 by epandele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	main(int ac, char **av)
 	t_data		data;
 	pthread_t	*threads;
 	pthread_t	monitor;
-	int		i;
+	int			i;
 
 	if (parse_args(ac, av, &data))
 		return (1);

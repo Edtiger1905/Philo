@@ -6,7 +6,7 @@
 /*   By: epandele <epandele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 11:26:26 by epandele          #+#    #+#             */
-/*   Updated: 2026/06/29 11:26:27 by epandele         ###   ########.fr       */
+/*   Updated: 2026/06/29 11:56:00 by epandele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static long	ft_atol(const char *str)
 {
 	int		i;
 	int		sign;
-	long		result;
+	long	result;
 
 	i = 0;
 	sign = 1;
@@ -63,6 +63,13 @@ static void	print_usage(void)
 	printf(" greater than 0 and within the range of an int.\n");
 }
 
+static long	meals(int ac, char **av)
+{
+	if (ac == 6)
+		return (ft_atol(av[5]));
+	return (-1);
+}
+
 int	parse_args(int ac, char **av, t_data *d)
 {
 	int	i;
@@ -82,10 +89,9 @@ int	parse_args(int ac, char **av, t_data *d)
 	d->time_to_die = ft_atol(av[2]);
 	d->time_to_eat = ft_atol(av[3]);
 	d->time_to_sleep = ft_atol(av[4]);
-	d->max_meals = (ac == 6) ? ft_atol(av[5]) : -1;
-	if (d->num_philos < 1 || d->time_to_die < 1
-		|| d->time_to_eat < 1 || d->time_to_sleep < 1
-		|| (ac == 6 && d->max_meals < 1))
+	d->max_meals = meals(ac, av);
+	if (d->num_philos < 1 || d->time_to_die < 1 || d->time_to_eat < 1
+		|| d->time_to_sleep < 1 || (ac == 6 && d->max_meals < 1))
 		return (1);
 	return (0);
 }

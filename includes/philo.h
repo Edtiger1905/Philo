@@ -6,12 +6,12 @@
 /*   By: epandele <epandele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 11:27:41 by epandele          #+#    #+#             */
-/*   Updated: 2026/06/29 11:28:54 by epandele         ###   ########.fr       */
+/*   Updated: 2026/06/29 11:43:17 by epandele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILOSOPHERS_H
-# define PHILOSOPHERS_H
+#ifndef PHILO_H
+# define PHILO_H
 
 /* ----------LIBRARIES---------- */
 
@@ -76,5 +76,9 @@ void					*monitor_routine(void *arg);
 /* time_stamp.c */
 long long				get_time_ms(void);
 void					precise_sleep(long long ms);
+
+/* philo_utils.c */
+
+int						is_dead(t_philo *p);
 
 #endif
